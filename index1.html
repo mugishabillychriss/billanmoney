@@ -59,7 +59,6 @@
 
     <script>
         (() => {
-            // Publishable key is intended for browser use. Never put a service_role key here.
             const client = window.supabase?.createClient(
                 "https://jbqbelfsdrsjzqcbyzgj.supabase.co",
                 "sb_publishable_7cVIOgKw1dvD1kShDSZ0qw_88KQkobO"
@@ -114,7 +113,7 @@
 
             async function submitPayment() {
                 setStatus("");
-                const { amount, days } = calculateResources();
+                const { amount } = calculateResources();
                 const txId = document.getElementById("txIdInput").value.trim();
                 const file = selectedFile;
 
@@ -141,7 +140,6 @@
                     const { error: insertError } = await client.from("payment_submissions").insert({
                         invoice_code: invoiceForSubmission,
                         amount_rwf: amount,
-                        allocated_days: days,
                         transaction_id: txId,
                         screenshot_path: uploadData?.path || uploadedPath,
                         status: "pending"
