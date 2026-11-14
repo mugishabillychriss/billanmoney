@@ -142,13 +142,13 @@
                         invoice_code: invoiceForSubmission,
                         amount_rwf: amount,
                         allocated_days: days,
-                        tx_id: txId,
-                        screenshot_url: uploadData?.path || uploadedPath,
+                        transaction_id: txId,
+                        screenshot_path: uploadData?.path || uploadedPath,
                         status: "pending"
                     });
                     if (insertError) {
                         if (insertError.code === "23505" || /duplicate key|unique constraint/i.test(insertError.message || "")) {
-                            throw new Error("This Mobile Money transaction ID has already been submitted. Check the ID or use the correct new transaction ID; duplicate payments are not accepted.");
+                            throw new Error("This Mobile Money transaction ID has already been submitted. Duplicate payments are not accepted; enter a new, valid transaction ID.");
                         }
                         throw insertError;
                     }
@@ -166,7 +166,10 @@
                         const { error: cleanupError } = await client.storage.from(bucket).remove([uploadedPath]);
                         if (cleanupError) console.warn("Receipt cleanup was not permitted or failed:", cleanupError.message);
                     }
-                    setStatus(error.message || "Unable to save the payment submission. Check Supabase configuration and try again.", true);
+                    const message = error.code === "PGRST204"
+                        ? "Supabase table columns do not match. Confirm payment_submissions has transaction_id and screenshot_path, then reload the API schema."
+                        : (error.message || "Unable to save the payment submission. Check Supabase configuration and try again.");
+                    setStatus(message, true);
                 } finally {
                     submitButton.disabled = false;
                     submitButton.classList.remove("opacity-60", "cursor-not-allowed");
