@@ -10,290 +10,183 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-blue-500 selection:text-white">
-
     <header class="pt-10 pb-6 px-4 text-center relative overflow-hidden">
         <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/20 via-slate-950 to-slate-955 pointer-events-none"></div>
         <div class="relative max-w-3xl mx-auto">
-            <span class="inline-flex items-center gap-1.5 py-1.5 px-4 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20 mb-3 shadow-sm">
-                <i class="fa-solid fa-sliders text-amber-400"></i> Dynamic Budget Calculator
-            </span>
-            <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
-                Pay What You Can, <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">Unlock What You Need</span>
-            </h1>
-            <p class="text-slate-400 mt-2 text-sm sm:text-base">
-                Enter your available budget in RWF (capped under 100,000 RWF), and our system will instantly allocate your library access days and resources.
-            </p>
+            <span class="inline-flex items-center gap-1.5 py-1.5 px-4 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20 mb-3 shadow-sm"><i class="fa-solid fa-sliders text-amber-400"></i> Dynamic Budget Calculator</span>
+            <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">Pay What You Can, <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">Unlock What You Need</span></h1>
+            <p class="text-slate-400 mt-2 text-sm sm:text-base">Enter your available budget in RWF (capped at 100,000 RWF), and our system will allocate your library access days and resources.</p>
         </div>
     </header>
 
     <main class="max-w-6xl mx-auto px-4 py-2 grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16 w-full items-start">
-        <div class="lg:col-span-7 space-y-5 bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
-            <h2 class="text-base font-bold text-slate-200 flex items-center gap-2">
-                <span class="flex items-center justify-center w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-bold">1</span>
-                Enter Your Budget (RWF)
-            </h2>
-
+        <section class="lg:col-span-7 space-y-5 bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
+            <h2 class="text-base font-bold text-slate-200 flex items-center gap-2"><span class="flex items-center justify-center w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-bold">1</span> Enter Your Budget (RWF)</h2>
             <div class="space-y-3 bg-slate-950 p-5 rounded-xl border border-slate-800">
                 <div class="flex justify-between items-center">
-                    <label class="text-xs font-semibold text-slate-300 uppercase tracking-wider">Your Custom Amount</label>
-                    <div class="flex items-center gap-1">
-                        <input type="number" id="customAmountInput" value="25000" min="1000" max="100000" step="500" oninput="calculateResources()" class="w-28 bg-slate-900 border border-slate-700 text-emerald-400 font-mono font-black text-lg px-3 py-1 rounded-lg text-right focus:outline-none focus:border-blue-500">
-                        <span class="text-xs text-slate-400 font-bold">RWF</span>
-                    </div>
+                    <label for="customAmountInput" class="text-xs font-semibold text-slate-300 uppercase tracking-wider">Your Custom Amount</label>
+                    <div class="flex items-center gap-1"><input type="number" id="customAmountInput" value="25000" min="1000" max="100000" step="500" class="w-28 bg-slate-900 border border-slate-700 text-emerald-400 font-mono font-black text-lg px-3 py-1 rounded-lg text-right focus:outline-none focus:border-blue-500"><span class="text-xs text-slate-400 font-bold">RWF</span></div>
                 </div>
-                <input type="range" id="budgetSlider" min="3000" max="99000" step="1000" value="25000" oninput="syncInputFromSlider()" class="w-full accent-blue-500 cursor-pointer">
-                <div class="flex justify-between text-[10px] text-slate-500 font-mono">
-                    <span>3,000 RWF (Min)</span>
-                    <span>50,000 RWF</span>
-                    <span>100,000 RWF (Max Cap)</span>
-                </div>
+                <input type="range" id="budgetSlider" min="3000" max="99000" step="1000" value="25000" class="w-full accent-blue-500 cursor-pointer">
+                <div class="flex justify-between text-[10px] text-slate-500 font-mono"><span>3,000 RWF (Min)</span><span>50,000 RWF</span><span>100,000 RWF (Max Cap)</span></div>
             </div>
-
             <div class="space-y-3">
                 <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Instant Resource Allocation</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-xl text-center">
-                        <i class="fa-solid fa-calendar-days text-blue-400 text-lg mb-1"></i>
-                        <span class="text-[10px] uppercase font-bold text-slate-500 block">Active Access Time</span>
-                        <span id="allocatedDays" class="text-lg font-black text-white mt-0.5 block">30 Days</span>
-                    </div>
-                    <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-xl text-center">
-                        <i class="fa-solid fa-book text-emerald-400 text-lg mb-1"></i>
-                        <span class="text-[10px] uppercase font-bold text-slate-500 block">Book Capacity</span>
-                        <span id="allocatedBooks" class="text-lg font-black text-white mt-0.5 block">1,500 Books</span>
-                    </div>
-                    <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-xl text-center">
-                        <i class="fa-solid fa-users text-purple-400 text-lg mb-1"></i>
-                        <span class="text-[10px] uppercase font-bold text-slate-500 block">Member Accounts</span>
-                        <span id="allocatedMembers" class="text-lg font-black text-white mt-0.5 block">300 Members</span>
-                    </div>
+                    <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-xl text-center"><i class="fa-solid fa-calendar-days text-blue-400 text-lg mb-1"></i><span class="text-[10px] uppercase font-bold text-slate-500 block">Active Access Time</span><span id="allocatedDays" class="text-lg font-black text-white mt-0.5 block">30 Days</span></div>
+                    <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-xl text-center"><i class="fa-solid fa-book text-emerald-400 text-lg mb-1"></i><span class="text-[10px] uppercase font-bold text-slate-500 block">Book Capacity</span><span id="allocatedBooks" class="text-lg font-black text-white mt-0.5 block">1,500 Books</span></div>
+                    <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-xl text-center"><i class="fa-solid fa-users text-purple-400 text-lg mb-1"></i><span class="text-[10px] uppercase font-bold text-slate-500 block">Member Accounts</span><span id="allocatedMembers" class="text-lg font-black text-white mt-0.5 block">300 Members</span></div>
                 </div>
-
-                <div class="bg-blue-950/30 border border-blue-500/30 p-3.5 rounded-xl flex items-start gap-3">
-                    <i class="fa-solid fa-circle-info text-blue-400 mt-0.5"></i>
-                    <p id="tierDescription" class="text-xs text-blue-200">
-                        Custom budget matched! Unlocks standard overdue tracking, digital receipts, and core library administration tools.
-                    </p>
-                </div>
+                <div class="bg-blue-950/30 border border-blue-500/30 p-3.5 rounded-xl flex items-start gap-3"><i class="fa-solid fa-circle-info text-blue-400 mt-0.5"></i><p id="tierDescription" class="text-xs text-blue-200"></p></div>
             </div>
-        </div>
+        </section>
 
-        <div class="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl relative">
-            <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
-                <div>
-                    <h3 class="font-bold text-base text-white">Dynamic Checkout</h3>
-                    <p class="text-xs text-slate-400">MoMo USSD & Supabase Receipt Log</p>
-                </div>
-                <span class="px-2.5 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[11px] font-bold rounded-lg flex items-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Active
-                </span>
-            </div>
-
-            <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-xl flex items-center justify-between mb-4">
-                <div>
-                    <span class="text-[10px] uppercase font-bold tracking-wider text-slate-500 block">Invoice Reference</span>
-                    <span id="invoiceCode" class="font-mono font-bold text-amber-400 text-xs">LMS-2026-894</span>
-                </div>
-                <div class="text-right">
-                    <span class="text-[10px] uppercase font-bold tracking-wider text-slate-500 block">Custom Amount</span>
-                    <span id="checkoutAmountLabel" class="font-mono font-bold text-xs text-emerald-400">25,000 RWF</span>
-                </div>
-            </div>
-
-            <div class="bg-slate-950 border border-blue-500/30 rounded-xl p-3 text-center mb-4">
-                <span class="text-[10px] text-slate-400 uppercase tracking-widest block mb-1">Dial USSD on MoMo Phone</span>
-                <div id="ussdDisplay" class="text-lg font-mono font-black text-white tracking-wider select-all py-0.5">
-                    *182*8*1*0795459250*25000#
-                </div>
-            </div>
-
-            <div class="flex items-center justify-center gap-4 bg-slate-950/50 border border-slate-800 rounded-xl p-3 mb-4">
-                <div class="bg-white p-2 rounded-lg shadow-sm">
-                    <div id="qrcode"></div>
-                </div>
-                <div class="text-left">
-                    <p class="text-xs font-semibold text-white">Scan to Pay via MoMo</p>
-                    <p class="text-[11px] text-slate-400 mt-0.5">Dynamic amount routing</p>
-                </div>
-            </div>
-
+        <section class="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl relative">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-4"><div><h3 class="font-bold text-base text-white">Dynamic Checkout</h3><p class="text-xs text-slate-400">MoMo USSD & Supabase Receipt Log</p></div><span class="px-2.5 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[11px] font-bold rounded-lg flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Active</span></div>
+            <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-xl flex items-center justify-between mb-4"><div><span class="text-[10px] uppercase font-bold tracking-wider text-slate-500 block">Invoice Reference</span><span id="invoiceCode" class="font-mono font-bold text-amber-400 text-xs"></span></div><div class="text-right"><span class="text-[10px] uppercase font-bold tracking-wider text-slate-500 block">Custom Amount</span><span id="checkoutAmountLabel" class="font-mono font-bold text-xs text-emerald-400"></span></div></div>
+            <div class="bg-slate-950 border border-blue-500/30 rounded-xl p-3 text-center mb-4"><span class="text-[10px] text-slate-400 uppercase tracking-widest block mb-1">Dial USSD on MoMo Phone</span><div id="ussdDisplay" class="text-lg font-mono font-black text-white tracking-wider select-all py-0.5" aria-live="polite"></div></div>
+            <div class="flex items-center justify-center gap-4 bg-slate-950/50 border border-slate-800 rounded-xl p-3 mb-4"><div class="bg-white p-2 rounded-lg shadow-sm"><div id="qrcode"></div></div><div class="text-left"><p class="text-xs font-semibold text-white">Scan to Pay via MoMo</p><p class="text-[11px] text-slate-400 mt-0.5">Dynamic amount routing</p></div></div>
             <div class="space-y-3">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">Mobile Money Transaction ID</label>
-                    <input type="text" id="txIdInput" placeholder="e.g. 30256999729" class="w-full bg-slate-950 border border-slate-800 focus:border-blue-500 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none font-mono">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">Upload Payment SMS Screenshot</label>
-                    <div class="flex items-center justify-center w-full">
-                        <label for="screenshotFile" class="flex flex-col items-center justify-center w-full h-20 border-2 border-slate-800 border-dashed rounded-xl cursor-pointer bg-slate-950 hover:bg-slate-900/80 transition-colors">
-                            <div class="flex flex-col items-center justify-center pt-1 pb-2 px-4 text-center">
-                                <i class="fa-solid fa-cloud-arrow-up text-blue-400 text-base mb-0.5"></i>
-                                <p id="fileNameDisplay" class="text-xs text-slate-300 font-medium">Click to attach screenshot</p>
-                            </div>
-                            <input type="file" id="screenshotFile" accept="image/*" class="hidden" onchange="handleFileSelect(event)">
-                        </label>
-                    </div>
-                </div>
-
-                <button onclick="submitDynamicBudgetToSupabase()" class="w-full bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-500 hover:to-emerald-500 text-white font-semibold py-3 px-4 rounded-xl transition-all shadow-lg shadow-blue-600/20 text-sm flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-database"></i> Submit Budget & Save to Supabase
-                </button>
-                <p id="submitStatus" class="text-xs text-center" aria-live="polite"></p>
+                <div><label for="txIdInput" class="block text-xs font-semibold text-slate-300 mb-1">Mobile Money Transaction ID</label><input type="text" id="txIdInput" maxlength="80" autocomplete="off" placeholder="e.g. 30256999729" class="w-full bg-slate-950 border border-slate-800 focus:border-blue-500 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none font-mono"></div>
+                <div><label for="screenshotFile" class="block text-xs font-semibold text-slate-300 mb-1">Upload Payment SMS Screenshot</label><label for="screenshotFile" class="flex flex-col items-center justify-center w-full h-20 border-2 border-slate-800 border-dashed rounded-xl cursor-pointer bg-slate-950 hover:bg-slate-900/80 transition-colors"><span class="flex flex-col items-center justify-center pt-1 pb-2 px-4 text-center"><i class="fa-solid fa-cloud-arrow-up text-blue-400 text-base mb-0.5"></i><span id="fileNameDisplay" class="text-xs text-slate-300 font-medium">Click to attach screenshot</span></span><input type="file" id="screenshotFile" accept="image/jpeg,image/png,image/webp" class="hidden"></label></div>
+                <button id="submitButton" type="button" class="w-full bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-500 hover:to-emerald-500 text-white font-semibold py-3 px-4 rounded-xl transition-all shadow-lg shadow-blue-600/20 text-sm flex items-center justify-center gap-2"><i class="fa-solid fa-database"></i> Submit Budget & Save to Supabase</button>
+                <p id="submitStatus" class="text-xs text-center" role="status" aria-live="polite"></p>
             </div>
-        </div>
+        </section>
     </main>
 
-    <footer class="text-center py-6 text-slate-500 text-xs border-t border-slate-900 bg-slate-950/80">
-        © 2026 Billan Company Library Management System. Dynamic Budget Allocation & Supabase Integration.
-    </footer>
+    <footer class="text-center py-6 text-slate-500 text-xs border-t border-slate-900 bg-slate-950/80">© 2026 Billan Company Library Management System. Dynamic Budget Allocation & Supabase Integration.</footer>
 
     <script>
-        const billanSupabase = window.supabase ? window.supabase.createClient(
-            "https://jbqbelfsdrsjzqcbyzgj.supabase.co",
-            "sb_publishable_7cVIOgKw1dvD1kShDSZ0qw_88KQkobO"
-        ) : null;
-
-        let currentInvoice = "LMS-2026-" + Math.floor(100 + Math.random() * 900);
-        document.getElementById("invoiceCode").innerText = currentInvoice;
-        let selectedFile = null;
-
-        function syncInputFromSlider() {
-            const sliderVal = document.getElementById("budgetSlider").value;
-            document.getElementById("customAmountInput").value = sliderVal;
-            calculateResources();
-        }
-
-        function calculateResources() {
-            let amount = parseInt(document.getElementById("customAmountInput").value) || 0;
-
-            if (amount > 100000) {
-                amount = 100000;
-                document.getElementById("customAmountInput").value = 100000;
-            }
-            if (amount < 1000) amount = 1000;
-
-            if (amount <= 99000) {
-                document.getElementById("budgetSlider").value = amount;
-            }
-
-            let days = Math.max(3, Math.floor(amount / 850));
-            let books = Math.min(10000, Math.floor(amount * 0.06));
-            let members = Math.min(2000, Math.floor(amount * 0.012));
-            let description = "";
-
-            if (amount < 10000) {
-                description = `Micro Budget (${amount.toLocaleString()} RWF): Unlocks short-term trial access (${days} Days) with basic book issue/return logging.`;
-            } else if (amount < 40000) {
-                description = `Standard Custom Budget (${amount.toLocaleString()} RWF): Unlocks ${days} Days of system access, ${books} books, and automated overdue tracking.`;
-            } else {
-                description = `Institutional Custom Budget (${amount.toLocaleString()} RWF): Unlocks full premium access (${days} Days), large-scale book management (${books} books), and priority support.`;
-            }
-
-            document.getElementById("allocatedDays").innerText = days + (days === 1 ? " Day" : " Days");
-            document.getElementById("allocatedBooks").innerText = books.toLocaleString() + " Books";
-            document.getElementById("allocatedMembers").innerText = members.toLocaleString() + " Members";
-            document.getElementById("tierDescription").innerText = description;
-            document.getElementById("checkoutAmountLabel").innerText = amount.toLocaleString() + " RWF";
-
-            const ussdString = `*182*8*1*0795459250*${amount}#`;
-            document.getElementById("ussdDisplay").innerText = ussdString;
-
-            document.getElementById("qrcode").innerHTML = "";
-            new QRCode(document.getElementById("qrcode"), {
-                text: `MOMOPAY:0795459250|AMT:${amount}|REF:${currentInvoice}`,
-                width: 84,
-                height: 84
-            });
-        }
-
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (file) {
-                selectedFile = file;
-                document.getElementById("fileNameDisplay").innerText = "📎 " + file.name;
-            }
-        }
-
-        async function submitDynamicBudgetToSupabase() {
-            const amount = Number.parseInt(document.getElementById("customAmountInput").value, 10);
-            const txId = document.getElementById("txIdInput").value.trim();
+        (() => {
+            // Publishable key is intended for browser use. Never put a service_role key here.
+            const client = window.supabase?.createClient(
+                "https://jbqbelfsdrsjzqcbyzgj.supabase.co",
+                "sb_publishable_7cVIOgKw1dvD1kShDSZ0qw_88KQkobO"
+            );
+            const bucket = "payment-receipts";
+            const amountInput = document.getElementById("customAmountInput");
+            const slider = document.getElementById("budgetSlider");
             const statusBox = document.getElementById("submitStatus");
-            statusBox.textContent = "";
-            statusBox.className = "text-xs text-center";
+            const submitButton = document.getElementById("submitButton");
+            let currentInvoice = newInvoice();
+            let selectedFile = null;
 
-            if (!txId) {
-                statusBox.textContent = "Please enter your Mobile Money Transaction ID.";
-                statusBox.classList.add("text-rose-400");
-                return;
+            function newInvoice() {
+                const suffix = (globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`).replaceAll("-", "").slice(0, 10).toUpperCase();
+                return `LMS-2026-${suffix}`;
             }
 
-            if (!selectedFile) {
-                statusBox.textContent = "Please attach your payment confirmation screenshot.";
-                statusBox.classList.add("text-rose-400");
-                return;
+            function setStatus(text, isError = false) {
+                statusBox.textContent = text;
+                statusBox.className = `text-xs text-center ${isError ? "text-rose-400" : "text-emerald-400"}`;
             }
 
-            if (isNaN(amount) || amount < 1000 || amount > 100000) {
-                statusBox.textContent = "Budget must be between 1,000 and 100,000 RWF.";
-                statusBox.classList.add("text-rose-400");
-                return;
+            function calculateResources() {
+                const parsed = Number.parseInt(amountInput.value, 10);
+                const amount = Number.isFinite(parsed) ? Math.min(100000, Math.max(1000, parsed)) : 1000;
+                if (amountInput.value !== String(amount)) amountInput.value = String(amount);
+                if (amount <= Number(slider.max)) slider.value = String(Math.max(Number(slider.min), amount));
+
+                const days = Math.max(3, Math.floor(amount / 850));
+                const books = Math.min(10000, Math.floor(amount * 0.06));
+                const members = Math.min(2000, Math.floor(amount * 0.012));
+                let description;
+                if (amount < 10000) description = `Micro Budget (${amount.toLocaleString()} RWF): Unlocks short-term trial access (${days} Days) with basic book issue/return logging.`;
+                else if (amount < 40000) description = `Standard Custom Budget (${amount.toLocaleString()} RWF): Unlocks ${days} Days of system access, ${books.toLocaleString()} books, and automated overdue tracking.`;
+                else description = `Institutional Custom Budget (${amount.toLocaleString()} RWF): Unlocks full premium access (${days} Days), large-scale book management (${books.toLocaleString()} books), and priority support.`;
+
+                document.getElementById("allocatedDays").textContent = `${days} ${days === 1 ? "Day" : "Days"}`;
+                document.getElementById("allocatedBooks").textContent = `${books.toLocaleString()} Books`;
+                document.getElementById("allocatedMembers").textContent = `${members.toLocaleString()} Members`;
+                document.getElementById("tierDescription").textContent = description;
+                document.getElementById("checkoutAmountLabel").textContent = `${amount.toLocaleString()} RWF`;
+                document.getElementById("invoiceCode").textContent = currentInvoice;
+                document.getElementById("ussdDisplay").textContent = `*182*8*1*0795459250*${amount}#`;
+
+                const qr = document.getElementById("qrcode");
+                qr.replaceChildren();
+                if (typeof QRCode !== "undefined") {
+                    new QRCode(qr, { text: `MOMOPAY:0795459250|AMT:${amount}|REF:${currentInvoice}`, width: 84, height: 84 });
+                }
+                return { amount, days };
             }
 
-            if (!billanSupabase) {
-                statusBox.textContent = "Supabase failed to initialize. Check the SDK script and project URL.";
-                statusBox.classList.add("text-rose-400");
-                return;
-            }
+            async function submitPayment() {
+                setStatus("");
+                const { amount, days } = calculateResources();
+                const txId = document.getElementById("txIdInput").value.trim();
+                const file = selectedFile;
 
-            try {
-                const fileExt = selectedFile.type === "image/jpeg" ? "jpg" : selectedFile.type.split("/")[1] || "png";
-                const bucketPath = `${currentInvoice}/${Date.now()}.${fileExt}`;
+                if (!client) return setStatus("Supabase SDK did not load. Refresh the page and try again.", true);
+                if (!txId) return setStatus("Please enter your Mobile Money Transaction ID.", true);
+                if (txId.length > 80) return setStatus("Transaction ID must be 80 characters or fewer.", true);
+                if (!file) return setStatus("Please attach your payment confirmation screenshot.", true);
+                if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) return setStatus("Use a JPEG, PNG, or WebP screenshot.", true);
+                if (file.size > 5 * 1024 * 1024) return setStatus("Screenshot must be no larger than 5 MB.", true);
 
-                const { data: uploadData, error: uploadError } = await billanSupabase.storage
-                    .from("payment-receipts")
-                    .upload(bucketPath, selectedFile, {
-                        cacheControl: "3600",
-                        upsert: false,
-                        contentType: selectedFile.type
+                submitButton.disabled = true;
+                submitButton.classList.add("opacity-60", "cursor-not-allowed");
+                submitButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving…';
+                let uploadedPath = null;
+                try {
+                    const invoiceForSubmission = currentInvoice;
+                    const extension = file.type === "image/jpeg" ? "jpg" : file.type.split("/")[1];
+                    uploadedPath = `${invoiceForSubmission}/${crypto.randomUUID()}.${extension}`;
+                    const { data: uploadData, error: uploadError } = await client.storage.from(bucket).upload(uploadedPath, file, {
+                        cacheControl: "3600", upsert: false, contentType: file.type
                     });
+                    if (uploadError) throw uploadError;
 
-                if (uploadError) throw uploadError;
-
-                const { error: insertError } = await billanSupabase
-                    .from("payment_submissions")
-                    .insert([
-                        {
-                            invoice_code: currentInvoice,
-                            amount_rwf: amount,
-                            allocated_days: Math.max(3, Math.floor(amount / 850)),
-                            tx_id: txId,
-                            screenshot_url: uploadData?.path || bucketPath,
-                            status: "pending"
+                    const { error: insertError } = await client.from("payment_submissions").insert({
+                        invoice_code: invoiceForSubmission,
+                        amount_rwf: amount,
+                        allocated_days: days,
+                        tx_id: txId,
+                        screenshot_url: uploadData?.path || uploadedPath,
+                        status: "pending"
+                    });
+                    if (insertError) {
+                        if (insertError.code === "23505" || /duplicate key|unique constraint/i.test(insertError.message || "")) {
+                            throw new Error("This Mobile Money transaction ID has already been submitted. Check the ID or use the correct new transaction ID; duplicate payments are not accepted.");
                         }
-                    ]);
+                        throw insertError;
+                    }
 
-                if (insertError) throw insertError;
-
-                statusBox.textContent = "✅ Payment saved to Supabase successfully.";
-                statusBox.classList.add("text-emerald-400");
-
-                document.getElementById("txIdInput").value = "";
-                document.getElementById("fileNameDisplay").innerText = "Click to attach screenshot";
-                document.getElementById("screenshotFile").value = "";
-                selectedFile = null;
-
-                currentInvoice = "LMS-2026-" + Math.floor(100 + Math.random() * 900);
-                document.getElementById("invoiceCode").innerText = currentInvoice;
-                calculateResources();
-            } catch (error) {
-                console.error("Supabase save failed:", error);
-                statusBox.textContent = error.message || "Unable to save to Supabase.";
-                statusBox.classList.add("text-rose-400");
+                    setStatus("Payment submission saved. It is pending payment verification.");
+                    document.getElementById("txIdInput").value = "";
+                    document.getElementById("screenshotFile").value = "";
+                    document.getElementById("fileNameDisplay").textContent = "Click to attach screenshot";
+                    selectedFile = null;
+                    currentInvoice = newInvoice();
+                    calculateResources();
+                } catch (error) {
+                    console.error("Supabase submission failed:", error);
+                    if (uploadedPath) {
+                        const { error: cleanupError } = await client.storage.from(bucket).remove([uploadedPath]);
+                        if (cleanupError) console.warn("Receipt cleanup was not permitted or failed:", cleanupError.message);
+                    }
+                    setStatus(error.message || "Unable to save the payment submission. Check Supabase configuration and try again.", true);
+                } finally {
+                    submitButton.disabled = false;
+                    submitButton.classList.remove("opacity-60", "cursor-not-allowed");
+                    submitButton.innerHTML = '<i class="fa-solid fa-database"></i> Submit Budget & Save to Supabase';
+                }
             }
-        }
 
-        calculateResources();
+            amountInput.addEventListener("input", calculateResources);
+            amountInput.addEventListener("change", calculateResources);
+            slider.addEventListener("input", () => {
+                amountInput.value = slider.value;
+                calculateResources();
+            });
+            document.getElementById("screenshotFile").addEventListener("change", event => {
+                selectedFile = event.target.files?.[0] || null;
+                document.getElementById("fileNameDisplay").textContent = selectedFile ? `📎 ${selectedFile.name}` : "Click to attach screenshot";
+            });
+            submitButton.addEventListener("click", submitPayment);
+            calculateResources();
+        })();
     </script>
 </body>
 </html>
